@@ -1,6 +1,7 @@
-// File: api/dinosaurs/class/[dinoClass].js
+// File: pages/api/dinosaurs/class/[dinoClass].js
 
-import { supabase } from '../../../../supabaseClient.js';
+import { supabase } from '../../../../supabaseClient';
+
 export default async function handler(req, res) {
     const { dinoClass } = req.query;
 
@@ -10,15 +11,23 @@ export default async function handler(req, res) {
     }
 
     try {
-        const db = await supabase();
-        const dinosaurs = await db.all('SELECT * FROM dinosaur_facts WHERE UPPER(class) = ?', [dinoClass.toUpperCase()]);
+        const { data, error } = await supabase
+            .from('dinosaur_facts')
+            .select('*')
+            .ilike('class', `%${dinoClass}%`);
 
-        if (!dinosaurs.length) {
+        if (error) {
+            console.error('Error fetching dinosaurs by class:', error);
+            res.status(500).json({ message: 'Internal Server Error' });
+            return;
+        }
+
+        if (data.length === 0) {
             res.status(404).json({ message: 'No dinosaurs found for this class' });
             return;
         }
 
-        res.status(200).json(dinosaurs);
+        res.status(200).json(data);
     } catch (error) {
         console.error('Error fetching dinosaurs by class:', error);
         res.status(500).json({ message: 'Internal Server Error' });
