@@ -1,7 +1,6 @@
 // File: api/dinosaurs/diet/[diet].js
 
-import { openDB } from '../../../../../api/connect.js';
-
+import { supabase } from '../../../../supabaseClient.js';
 export default async function handler(req, res) {
     const { diet } = req.query;
 
@@ -11,7 +10,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const db = await openDB();
+        const db = await supabase();
         const dinosaurs = await db.all('SELECT * FROM dinosaur_facts WHERE UPPER(diet) = ?', [diet.toUpperCase()]);
 
         if (!dinosaurs.length) {

@@ -1,8 +1,7 @@
-import { openDB } from '../../../../../api/connect.js';
-
+import { supabase } from '../../../../supabaseClient.js';
 export default async function handler(req, res) {
     const { name } = req.query;
-    const db = await openDB();
+    const db = await supabase();
     const dinosaurs = await db.all('SELECT * FROM dinosaur_facts WHERE UPPER(name) = ?', [name.toUpperCase()]);
 
     if (!dinosaurs.length) {

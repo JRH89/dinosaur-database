@@ -1,3 +1,4 @@
+// src/components/Query.jsx
 'use client';
 
 import { useState } from 'react';
@@ -17,7 +18,7 @@ export default function Query() {
     const fetchDinosaurs = async () => {
         const encodedQuery = encodeURIComponent(query);
         try {
-            const res = await fetch(`https://dinosaur-database.vercel.app/api/dinosaurs/${searchType}/${encodedQuery}`);
+            const res = await fetch(`/api/dinosaurs/${searchType}/${encodedQuery}`);
             if (!res.ok) {
                 throw new Error('Network response was not ok');
             }
